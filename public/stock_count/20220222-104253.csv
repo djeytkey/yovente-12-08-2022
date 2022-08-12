@@ -1,0 +1,7 @@
+"Product Name,"" Product Code"","" Expected"","" Counted"""
+Product 1 Tunique,P-22-546,5,5
+Product 1 Tunique,P-22-546,7,7
+Product 1 Tunique,P-22-546,9,9
+Product 2 Tunique,P-22-582,0,0
+Product 2 Tunique,P-22-582,-1,1
+Product 2 Tunique,P-22-582,-1,1
