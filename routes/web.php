@@ -302,7 +302,7 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::post('comment', 'CommentsController@postComment');
 	
 	Route::resource('tickets', 'TicketsController');
-	Route::post('tickets/ticket-data', 'SaleController@ticketData');
+	Route::post('tickets/ticket-data', 'TicketsController@ticketData');
 	//Route::get('tickets', 'TicketsController@index');
     Route::post('close_ticket/{ticket_id}', 'TicketsController@close');
 });

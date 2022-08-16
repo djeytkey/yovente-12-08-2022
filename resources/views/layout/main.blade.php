@@ -1545,8 +1545,8 @@
                                             {!! csrf_field() !!}
                                             <div class="form-group{{ $errors->has('title') ? ' has-error' : '' }}">
                                                 <label for="title" class="col-md-4 control-label">Title</label>
-                                                <div class="col-md-12">
-                                                    <input id="title" type="text" class="form-control" name="title" value="{{ old('title') }}">
+                                                <div class="col-md-6">
+                                                    <input id="title" type="text" class="form-control" name="title" value="{{ old('title') }}" required>
                                                     @if ($errors->has('title'))
                                                         <span class="help-block">
                                                             <strong>{{ $errors->first('title') }}</strong>
@@ -1554,10 +1554,10 @@
                                                     @endif
                                                 </div>
                                             </div>
-                                            <div class="col-md-12 form-group{{ $errors->has('category') ? ' has-error' : ' ' }}{{ $errors->has('priority') ? ' has-error' : ' ' }}">
+                                            <div class="form-group{{ $errors->has('priority') ? ' has-error' : ' ' }}{{ $errors->has('priority') ? ' has-error' : ' ' }}">
                                                 <label for="category" class="col-md-4 control-label">Category</label>
                                                 <div class="col-md-6">
-                                                    <select id="category" type="category" class="form-control" name="category">
+                                                    <select id="category" type="category" class="form-control" name="category" required>
                                                         <option value="">Select Category</option>
                                                         @foreach ($categories as $category)
                                                             <option value="{{ $category->id }}">{{ $category->name }}</option>
@@ -1571,7 +1571,7 @@
                                                 </div>
                                                 <label for="priority" class="col-md-4 control-label">Priority</label>
                                                 <div class="col-md-6">
-                                                    <select id="priority" type="" class="form-control" name="priority">
+                                                    <select id="priority" type="" class="form-control" name="priority" required>
                                                         <option value="">Select Priority</option>
                                                         <option value="low">Low</option>
                                                         <option value="medium">Medium</option>
@@ -1587,7 +1587,7 @@
                                             <div class="form-group{{ $errors->has('message') ? ' has-error' : '' }}">
                                                 <label for="message" class="col-md-4 control-label">Message</label>
                                                 <div class="col-md-12">
-                                                    <textarea rows="5" id="message" class="form-control" name="message"></textarea>
+                                                    <textarea rows="5" id="message" class="form-control" name="message" required></textarea>
                                                     @if ($errors->has('message'))
                                                         <span class="help-block">
                                                             <strong>{{ $errors->first('message') }}</strong>

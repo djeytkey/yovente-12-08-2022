@@ -39,9 +39,9 @@
                         <label class="d-tc mt-2"><strong>{{trans('file.Choose Status')}}</strong> &nbsp;</label>
                         <div class="d-tc">
                             <select id="status_id" name="status_id" class="selectpicker form-control" data-live-search="true" >
-                                <option value="All">{{trans('file.All Status')}}</option>
-                                <option value="Open">{{trans('file.Open')}}</option>
-                                <option value="Closed">{{trans('file.Closed')}}</option>
+                                <option value="2">{{trans('file.All Status')}}</option>
+                                <option value="1">{{trans('file.Open')}}</option>
+                                <option value="0">{{trans('file.Closed')}}</option>
                             </select>
                         </div>
                     </div>
@@ -173,10 +173,10 @@
         },
         order:[['1', 'desc']],
         'columnDefs': [
-            // {
-            //     "orderable": false,
-            //     'targets': [0, 5, 9, 10],
-            // },
+            {
+                "orderable": false,
+                'targets': [0, 2, 3, 5, 7, 8],
+            },
             // {
             //     'targets': 3,
             //     className: 'noVis'
