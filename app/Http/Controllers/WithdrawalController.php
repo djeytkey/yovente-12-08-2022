@@ -48,8 +48,6 @@ class WithdrawalController extends Controller
             return redirect()->back()->with('not_permitted', trans('file.Sorry! The minimum amount is not reached'));
         }
         if ($data['withdraw_available'] >= $data['withdraw_amount']) {
-            $data['is_valide'] = 0;
-            $data['is_paid'] = 0;
             Withdrawal::create($data);
             return redirect('withdraw')->with('message', 'Data inserted successfully');
         } else {
@@ -128,5 +126,22 @@ class WithdrawalController extends Controller
         $lims_withdraw_data = Withdrawal::find($id);
         $lims_withdraw_data->delete();
         return redirect('withdraw')->with('not_permitted', 'Data deleted successfully');
+    }
+
+    public function is_valide(Request $request, $id)
+    {
+        $lims_withdraw_data = Withdrawal::find($id);
+        $lims_withdraw_data->is_valide = 1;
+        $lims_withdraw_data->save();
+        return redirect('withdraw')->with('message', 'Withdraw validated succefully');
+    }
+
+    public function is_paid(Request $request, $id)
+    {
+        $lims_withdraw_data = Withdrawal::find($id);
+        $lims_withdraw_data->is_valide = 1;
+        $lims_withdraw_data->is_paid = 1;
+        $lims_withdraw_data->save();
+        return redirect('withdraw')->with('message', 'Withdraw paid succefully');
     }
 }

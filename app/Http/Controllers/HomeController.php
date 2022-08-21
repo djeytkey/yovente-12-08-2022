@@ -49,9 +49,15 @@ class HomeController extends Controller
             $total_sales = Sale::where('user_id', Auth::id())->count();
             $livre_facture = Delivery::where([['sold_by', Auth::id()], ['is_close', true]])->count();
             $en_cours = Delivery::where([['sold_by', Auth::id()], ['is_close', false]])->count();
+
             $profit = 0;
+            $reste = 0;
+            $total_withdraws = 0;
+            $demande_withdraws = 0;
             $original_price = 0;
             $net_price = 0;
+            $diff_price = 0;
+            $livraison = 0;
 
             $lims_sale_data = Sale::where([
                                             ['user_id', Auth::id()],
@@ -64,24 +70,28 @@ class HomeController extends Controller
             foreach ($lims_sale_data as $sale) {
                 $lims_product_sale_data = Product_Sale::where('sale_id', $sale->id)->get();
                 foreach ($lims_product_sale_data as $product_sale) {
-                    $original_price += $product_sale->original_price;
-                    $net_price += $product_sale->net_price;
+                    $original_price += $product_sale->original_price * $product_sale->qty;                    
                 }
-            }
+                $net_price += $sale->grand_total;
+                $livraison += $sale->livraison;
+            }            
 
+            $profit = $net_price - $original_price - $livraison;
 
+            $total_withdraws = Withdrawal::where([
+                                                    ['user_id', Auth::id()],
+                                                    ['is_paid', true]
+                                                ])
+                                            ->sum('withdraw_amount');
 
+            $demande_withdraws = Withdrawal::where([
+                                                    ['user_id', Auth::id()],
+                                                    ['is_paid', false]
+                                                ])->count();
 
+            $reste = $profit - $total_withdraws;
 
-
-            
-            $product_sale_data = Sale::join('product_sales', 'sales.id','=', 'product_sales.sale_id')
-                ->select(DB::raw('product_sales.product_id, sum(product_sales.qty) as sold_qty, sum(product_sales.total) as sold_amount'))
-                ->where('sales.user_id', Auth::id())
-                ->whereDate('product_sales.created_at', '>=' , $start_date)
-                ->whereDate('product_sales.created_at', '<=' , $end_date)
-                ->groupBy('product_sales.product_id')
-                ->get();
+            $product_sale_data = Product_Sale::select(DB::raw('product_id, product_batch_id, sum(qty) as sold_qty, sum(total) as sold_amount'))->whereDate('created_at', '>=' , $start_date)->whereDate('created_at', '<=' , $end_date)->groupBy('product_id', 'product_batch_id')->get();
 
             $product_revenue = 0;
             $product_cost = 0;
@@ -113,17 +123,98 @@ class HomeController extends Controller
                 $product_cost += $purchased_amount;
             }
 
-            $revenue = Sale::whereDate('created_at', '>=' , $start_date)->where('user_id', Auth::id())->whereDate('created_at', '<=' , $end_date)->sum('grand_total');
-            $return = Returns::whereDate('created_at', '>=' , $start_date)->where('user_id', Auth::id())->whereDate('created_at', '<=' , $end_date)->sum('grand_total');
-            $purchase_return = ReturnPurchase::whereDate('created_at', '>=' , $start_date)->where('user_id', Auth::id())->whereDate('created_at', '<=' , $end_date)->sum('grand_total');
+            $revenue = Sale::whereDate('created_at', '>=' , $start_date)->whereDate('created_at', '<=' , $end_date)->sum('grand_total');
+            $return = Returns::whereDate('created_at', '>=' , $start_date)->whereDate('created_at', '<=' , $end_date)->sum('grand_total');
+            $purchase_return = ReturnPurchase::whereDate('created_at', '>=' , $start_date)->whereDate('created_at', '<=' , $end_date)->sum('grand_total');
             $revenue = $revenue - $return;
-            $purchase = Purchase::whereDate('created_at', '>=' , $start_date)->where('user_id', Auth::id())->whereDate('created_at', '<=' , $end_date)->sum('grand_total');
+            $purchase = Purchase::whereDate('created_at', '>=' , $start_date)->whereDate('created_at', '<=' , $end_date)->sum('grand_total');
             //$profit = $revenue + $purchase_return - $product_cost;
-            $expense = Expense::whereDate('created_at', '>=' , $start_date)->where('user_id', Auth::id())->whereDate('created_at', '<=' , $end_date)->sum('amount');
-            $recent_sale = Sale::orderBy('id', 'desc')->where('user_id', Auth::id())->take(5)->get();
-            $recent_purchase = Purchase::orderBy('id', 'desc')->where('user_id', Auth::id())->take(5)->get();
-            $recent_quotation = Quotation::orderBy('id', 'desc')->where('user_id', Auth::id())->take(5)->get();
-            $recent_payment = Payment::orderBy('id', 'desc')->where('user_id', Auth::id())->take(5)->get();
+            $expense = Expense::whereDate('created_at', '>=' , $start_date)->whereDate('created_at', '<=' , $end_date)->sum('amount');
+            $recent_sale = Sale::orderBy('id', 'desc')->take(5)->get();
+            $recent_purchase = Purchase::orderBy('id', 'desc')->take(5)->get();
+            $recent_quotation = Quotation::orderBy('id', 'desc')->take(5)->get();
+            $recent_payment = Payment::orderBy('id', 'desc')->take(5)->get();
+
+
+
+            // $total_sales = Sale::where('user_id', Auth::id())->count();
+            // $livre_facture = Delivery::where([['sold_by', Auth::id()], ['is_close', true]])->count();
+            // $en_cours = Delivery::where([['sold_by', Auth::id()], ['is_close', false]])->count();
+            // $profit = 0;
+            // $original_price = 0;
+            // $net_price = 0;
+
+            // $lims_sale_data = Sale::where([
+            //                                 ['user_id', Auth::id()],
+            //                                 ['delivery_status', 4]
+            //                             ])
+            //                     ->whereDate('created_at', '>=' , $start_date)
+            //                     ->whereDate('created_at', '<=' , $end_date)
+            //                     ->get();
+
+            // foreach ($lims_sale_data as $sale) {
+            //     $lims_product_sale_data = Product_Sale::where('sale_id', $sale->id)->get();
+            //     foreach ($lims_product_sale_data as $product_sale) {
+            //         $original_price += $product_sale->original_price;
+            //         $net_price += $product_sale->net_price;
+            //     }
+            // }
+
+
+
+
+
+
+            
+            // $product_sale_data = Sale::join('product_sales', 'sales.id','=', 'product_sales.sale_id')
+            //     ->select(DB::raw('product_sales.product_id, sum(product_sales.qty) as sold_qty, sum(product_sales.total) as sold_amount'))
+            //     ->where('sales.user_id', Auth::id())
+            //     ->whereDate('product_sales.created_at', '>=' , $start_date)
+            //     ->whereDate('product_sales.created_at', '<=' , $end_date)
+            //     ->groupBy('product_sales.product_id')
+            //     ->get();
+
+            // $product_revenue = 0;
+            // $product_cost = 0;
+            // //$profit = 0;
+            // foreach ($product_sale_data as $key => $product_sale) {
+            //     if($product_sale->product_batch_id)
+            //         $product_purchase_data = ProductPurchase::where([
+            //             ['product_id', $product_sale->product_id],
+            //             ['product_batch_id', $product_sale->product_batch_id]
+            //         ])->get();
+            //     else
+            //         $product_purchase_data = ProductPurchase::where('product_id', $product_sale->product_id)->get();
+
+            //     $purchased_qty = 0;
+            //     $purchased_amount = 0;
+            //     $sold_qty = $product_sale->sold_qty;
+            //     $product_revenue += $product_sale->sold_amount;
+            //     foreach ($product_purchase_data as $key => $product_purchase) {
+            //         $purchased_qty += $product_purchase->qty;
+            //         $purchased_amount += $product_purchase->total;
+            //         if($purchased_qty >= $sold_qty) {
+            //             $qty_diff = $purchased_qty - $sold_qty;
+            //             $unit_cost = $product_purchase->total / $product_purchase->qty;
+            //             $purchased_amount -= ($qty_diff * $unit_cost);
+            //             break;
+            //         }
+            //     }
+
+            //     $product_cost += $purchased_amount;
+            // }
+
+            // $revenue = Sale::whereDate('created_at', '>=' , $start_date)->where('user_id', Auth::id())->whereDate('created_at', '<=' , $end_date)->sum('grand_total');
+            // $return = Returns::whereDate('created_at', '>=' , $start_date)->where('user_id', Auth::id())->whereDate('created_at', '<=' , $end_date)->sum('grand_total');
+            // $purchase_return = ReturnPurchase::whereDate('created_at', '>=' , $start_date)->where('user_id', Auth::id())->whereDate('created_at', '<=' , $end_date)->sum('grand_total');
+            // $revenue = $revenue - $return;
+            // $purchase = Purchase::whereDate('created_at', '>=' , $start_date)->where('user_id', Auth::id())->whereDate('created_at', '<=' , $end_date)->sum('grand_total');
+            // //$profit = $revenue + $purchase_return - $product_cost;
+            // $expense = Expense::whereDate('created_at', '>=' , $start_date)->where('user_id', Auth::id())->whereDate('created_at', '<=' , $end_date)->sum('amount');
+            // $recent_sale = Sale::orderBy('id', 'desc')->where('user_id', Auth::id())->take(5)->get();
+            // $recent_purchase = Purchase::orderBy('id', 'desc')->where('user_id', Auth::id())->take(5)->get();
+            // $recent_quotation = Quotation::orderBy('id', 'desc')->where('user_id', Auth::id())->take(5)->get();
+            // $recent_payment = Payment::orderBy('id', 'desc')->where('user_id', Auth::id())->take(5)->get();
         }
         else { // Role Admin
             $total_sales = Sale::all()->count();
@@ -133,6 +224,7 @@ class HomeController extends Controller
             $profit = 0;
             $reste = 0;
             $total_withdraws = 0;
+            $demande_withdraws = 0;
             $original_price = 0;
             $net_price = 0;
             $diff_price = 0;
@@ -150,8 +242,6 @@ class HomeController extends Controller
                 }
                 $net_price += $sale->grand_total;
                 $livraison += $sale->livraison;
-                
-
             }            
 
             $profit = $net_price - $original_price - $livraison;

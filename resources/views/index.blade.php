@@ -154,9 +154,7 @@
                     <div class="name"><strong style="color: #297ff9">{{trans('file.Payé')}}</strong></div>
                     <div class="count-number profit-claimed-data">
                       {{number_format((float)$total_withdraws, 2, '.', '')}}
-                      @if ($demande_withdraws != 0)
-                        &nbsp;&nbsp;<span style="display: inline-flex; font-size: 0.65em;">({{ $demande_withdraws }})</span>
-                      @endif
+                      <span style="display: inline-flex; font-size: 0.65em;">({{ $demande_withdraws }})</span>
                       </div>
                   </div>
                 </div>

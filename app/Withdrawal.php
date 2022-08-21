@@ -8,6 +8,6 @@ class Withdrawal extends Model
 {
     protected $fillable =[
 
-        "reference_no", "user_id", "withdraw_amount", "withdraw_note", "is_valide"
+        "reference_no", "user_id", "withdraw_amount", "withdraw_note", "is_valide", "is_paid"
     ];
 }

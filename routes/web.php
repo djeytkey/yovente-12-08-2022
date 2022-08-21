@@ -241,6 +241,8 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::resource('expenses', 'ExpenseController');
 
 	Route::post('withdraw/deletebyselection', 'WithdrawalController@deleteBySelection');
+	Route::put('withdraw/is_valide/{id}', 'WithdrawalController@is_valide')->name('withdraw.is_valide');
+	Route::put('withdraw/is_paid/{id}', 'WithdrawalController@is_paid')->name('withdraw.is_paid');
 	Route::resource('withdraw', 'WithdrawalController');
 
 	Route::get('gift_cards/gencode', 'GiftCardController@generateCode');

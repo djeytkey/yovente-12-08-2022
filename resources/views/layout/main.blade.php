@@ -1501,6 +1501,8 @@
                             <div class="col-md-12 form-group">
                                 <label>{{ trans('file.Note') }}</label>
                                 <textarea name="withdraw_note" rows="2" class="form-control"></textarea>
+                                <input type="hidden" name="is_valide" value="0" />
+                                <input type="hidden" name="is_paid" value="0" />
                             </div>
                         </div>
                         <div class="form-group">

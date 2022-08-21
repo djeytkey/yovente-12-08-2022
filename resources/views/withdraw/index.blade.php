@@ -47,6 +47,21 @@
                                         </button>
                                         <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default"
                                             user="menu">
+                                            @if (Auth::user()->role_id == 1)
+                                                <li class="divider"></li>
+                                                {{ Form::open(['route' => ['withdraw.is_valide', $withdraw->id], 'method' => 'PUT']) }}
+                                                <li>
+                                                    <button type="submit" class="btn btn-link"><i
+                                                            class="dripicons-checkmark"></i>{{ trans('file.Validate') }}</button>
+                                                </li>
+                                                {{ Form::close() }}
+                                                {{ Form::open(['route' => ['withdraw.is_paid', $withdraw->id], 'method' => 'PUT']) }}
+                                                <li>
+                                                    <button type="submit" class="btn btn-link"><i
+                                                            class="dripicons-wallet"></i>{{ trans('file.Paid') }}</button>
+                                                </li>
+                                                {{ Form::close() }}
+                                            @endif
                                             @if (in_array('withdraw-edit', $all_permission))
                                                 <li><button type="button" data-value="{{ $withdraw->withdraw_amount }}" data-id="{{ $withdraw->id }}"
                                                         class="open-Editwithdraw_categoryDialog btn btn-link"
@@ -71,7 +86,19 @@
                                         <div class="badge badge-success">{{ trans('file.Is Paid') }}</div>
                                     @else
                                         @if ($withdraw->is_valide == '1')
-                                            <div class="badge badge-success">{{ trans('file.Valid') }}</div>
+                                            <div class="badge badge-success">
+                                                {{ trans('file.Valid') }}
+                                            </div>
+                                            @if (Auth::user()->role_id == 1)
+                                            <span>
+                                                {{ Form::open(['route' => ['withdraw.is_paid', $withdraw->id], 'method' => 'PUT']) }}
+                                                    <button type="submit" class="btn btn-primary">
+                                                        <i class="dripicons-wallet"></i>
+                                                        {{ trans('file.Paid') }}
+                                                    </button>
+                                                {{ Form::close() }}
+                                            </span>
+                                            @endif
                                         @endif
                                     @endif
                                 @endif

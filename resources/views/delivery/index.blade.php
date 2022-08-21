@@ -103,26 +103,30 @@
                     <td>{{ $lims_city_data->name }}</td>
                     <td><div class="badge badge-{{ $badge }}">{{ $status }}<br>{{ $status_date }}</div></td>
                     <td>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{trans('file.action')}}
-                              <span class="caret"></span>
-                              <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
-                                {{-- <li>
-                                    <button type="button" data-id="{{$delivery->id}}" class="open-EditCategoryDialog btn btn-link"><i class="dripicons-document-edit"></i> {{trans('file.edit')}}</button>
-                                </li> --}}
-                                <li>
-                                    <button type="button" class="add-delivery btn btn-link" data-id = "{{ $lims_sale_data->id }}"><i class="fa fa-truck"></i> {{ trans('file.Add Delivery') }}</button>
-                                </li>
-                                <li class="divider"></li>
-                                {{ Form::open(['route' => ['delivery.delete', $delivery->id], 'method' => 'post'] ) }}
-                                <li>
-                                  <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="dripicons-trash"></i> {{trans('file.delete')}}</button> 
-                                </li>
-                                {{ Form::close() }}
-                            </ul>
-                        </div>
+                        @if (Auth::user()->role_id == 1)
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">{{trans('file.action')}}
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
+                                    {{-- <li>
+                                        <button type="button" data-id="{{$delivery->id}}" class="open-EditCategoryDialog btn btn-link"><i class="dripicons-document-edit"></i> {{trans('file.edit')}}</button>
+                                    </li> --}}
+                                    <li>
+                                        <button type="button" class="add-delivery btn btn-link" data-id = "{{ $lims_sale_data->id }}"><i class="fa fa-truck"></i> {{ trans('file.Add Delivery') }}</button>
+                                    </li>
+                                    <li class="divider"></li>
+                                    {{ Form::open(['route' => ['delivery.delete', $delivery->id], 'method' => 'post'] ) }}
+                                    <li>
+                                    <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="dripicons-trash"></i> {{trans('file.delete')}}</button> 
+                                    </li>
+                                    {{ Form::close() }}
+                                </ul>
+                            </div>
+                        @else
+                         ----
+                        @endif
                     </td>
                 </tr>
                 @endforeach

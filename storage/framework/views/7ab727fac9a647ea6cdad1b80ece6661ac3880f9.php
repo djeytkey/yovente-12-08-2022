@@ -103,27 +103,31 @@
                     <td><?php echo e($lims_city_data->name); ?></td>
                     <td><div class="badge badge-<?php echo e($badge); ?>"><?php echo e($status); ?><br><?php echo e($status_date); ?></div></td>
                     <td>
-                        <div class="btn-group">
-                            <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo e(trans('file.action')); ?>
+                        <?php if(Auth::user()->role_id == 1): ?>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-default btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><?php echo e(trans('file.action')); ?>
 
-                              <span class="caret"></span>
-                              <span class="sr-only">Toggle Dropdown</span>
-                            </button>
-                            <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
-                                
-                                <li>
-                                    <button type="button" class="add-delivery btn btn-link" data-id = "<?php echo e($lims_sale_data->id); ?>"><i class="fa fa-truck"></i> <?php echo e(trans('file.Add Delivery')); ?></button>
-                                </li>
-                                <li class="divider"></li>
-                                <?php echo e(Form::open(['route' => ['delivery.delete', $delivery->id], 'method' => 'post'] )); ?>
+                                <span class="caret"></span>
+                                <span class="sr-only">Toggle Dropdown</span>
+                                </button>
+                                <ul class="dropdown-menu edit-options dropdown-menu-right dropdown-default" user="menu">
+                                    
+                                    <li>
+                                        <button type="button" class="add-delivery btn btn-link" data-id = "<?php echo e($lims_sale_data->id); ?>"><i class="fa fa-truck"></i> <?php echo e(trans('file.Add Delivery')); ?></button>
+                                    </li>
+                                    <li class="divider"></li>
+                                    <?php echo e(Form::open(['route' => ['delivery.delete', $delivery->id], 'method' => 'post'] )); ?>
 
-                                <li>
-                                  <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="dripicons-trash"></i> <?php echo e(trans('file.delete')); ?></button> 
-                                </li>
-                                <?php echo e(Form::close()); ?>
+                                    <li>
+                                    <button type="submit" class="btn btn-link" onclick="return confirmDelete()"><i class="dripicons-trash"></i> <?php echo e(trans('file.delete')); ?></button> 
+                                    </li>
+                                    <?php echo e(Form::close()); ?>
 
-                            </ul>
-                        </div>
+                                </ul>
+                            </div>
+                        <?php else: ?>
+                         ----
+                        <?php endif; ?>
                     </td>
                 </tr>
                 <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
