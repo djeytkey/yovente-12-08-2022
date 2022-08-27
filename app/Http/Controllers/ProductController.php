@@ -514,49 +514,70 @@ class ProductController extends Controller
 
     public function productWarehouseData($id)
     {
-        $warehouse = [];
-        $qty = [];
-        $warehouse_name = [];
         $variant_name = [];
         $variant_qty = [];
-        $product_warehouse = [];
         $product_variant_warehouse = [];
-        $lims_product_data = Product::select('id', 'is_variant')->find($id);
+        $lims_product_data = Product::select('id', 'is_variant', 'name', 'qty')->find($id);
         if($lims_product_data->is_variant) {
-            $lims_product_variant_warehouse_data = Product_Warehouse::where('product_id', $lims_product_data->id)->orderBy('warehouse_id')->get();
-            $lims_product_warehouse_data = Product_Warehouse::select('warehouse_id', DB::raw('sum(qty) as qty'))->where('product_id', $id)->groupBy('warehouse_id')->get();
-            foreach ($lims_product_variant_warehouse_data as $key => $product_variant_warehouse_data) {
-                $lims_warehouse_data = Warehouse::find($product_variant_warehouse_data->warehouse_id);
-                $lims_variant_data = Variant::find($product_variant_warehouse_data->variant_id);
-                $warehouse_name[] = $lims_warehouse_data->name;
+            $lims_product_variant_data = ProductVariant::where('product_id', $lims_product_data->id)->get();
+            foreach ($lims_product_variant_data as $key => $product_variant_data) {
+                $lims_variant_data = Variant::find($product_variant_data->variant_id);
                 $variant_name[] = $lims_variant_data->name;
-                $variant_qty[] = $product_variant_warehouse_data->qty;
+                $variant_qty[] = $product_variant_data->qty;
             }
+        } else {
+            $variant_name[] = $lims_product_data->name;
+            $variant_qty[] = $lims_product_data->qty;
         }
-        else {
-            $lims_product_warehouse_data = Product_Warehouse::where('product_id', $id)->orderBy('warehouse_id', 'asc')->get();
-        }
-        foreach ($lims_product_warehouse_data as $key => $product_warehouse_data) {
-            $lims_warehouse_data = Warehouse::find($product_warehouse_data->warehouse_id);
-            if($product_warehouse_data->product_batch_id) {
-                $product_batch_data = ProductBatch::select('batch_no', 'expired_date')->find($product_warehouse_data->product_batch_id);
-                $batch_no = $product_batch_data->batch_no;
-                $expiredDate = date(config('date_format'), strtotime($product_batch_data->expired_date));
-            }
-            else {
-                $batch_no = 'N/A';
-                $expiredDate = 'N/A';
-            }
-            $warehouse[] = $lims_warehouse_data->name;
-            $batch[] = $batch_no;
-            $expired_date[] = $expiredDate;
-            $qty[] = $product_warehouse_data->qty;
-        }
-
-        $product_warehouse = [$warehouse, $qty, $batch, $expired_date];
-        $product_variant_warehouse = [$warehouse_name, $variant_name, $variant_qty];
-        return ['product_warehouse' => $product_warehouse, 'product_variant_warehouse' => $product_variant_warehouse];
+        $product_variant_warehouse = [$variant_name, $variant_qty];
+        return ['product_variant_warehouse' => $product_variant_warehouse];
     }
+
+    // public function productWarehouseData($id)
+    // {
+    //     $warehouse = [];
+    //     $qty = [];
+    //     $warehouse_name = [];
+    //     $variant_name = [];
+    //     $variant_qty = [];
+    //     $product_warehouse = [];
+    //     $product_variant_warehouse = [];
+    //     $lims_product_data = Product::select('id', 'is_variant')->find($id);
+    //     if($lims_product_data->is_variant) {
+    //         $lims_product_variant_warehouse_data = Product_Warehouse::where('product_id', $lims_product_data->id)->orderBy('warehouse_id')->get();
+    //         $lims_product_warehouse_data = Product_Warehouse::select('warehouse_id', DB::raw('sum(qty) as qty'))->where('product_id', $id)->groupBy('warehouse_id')->get();
+    //         foreach ($lims_product_variant_warehouse_data as $key => $product_variant_warehouse_data) {
+    //             $lims_warehouse_data = Warehouse::find($product_variant_warehouse_data->warehouse_id);
+    //             $lims_variant_data = Variant::find($product_variant_warehouse_data->variant_id);
+    //             $warehouse_name[] = $lims_warehouse_data->name;
+    //             $variant_name[] = $lims_variant_data->name;
+    //             $variant_qty[] = $product_variant_warehouse_data->qty;
+    //         }
+    //     }
+    //     else {
+    //         $lims_product_warehouse_data = Product_Warehouse::where('product_id', $id)->orderBy('warehouse_id', 'asc')->get();
+    //     }
+    //     foreach ($lims_product_warehouse_data as $key => $product_warehouse_data) {
+    //         $lims_warehouse_data = Warehouse::find($product_warehouse_data->warehouse_id);
+    //         if($product_warehouse_data->product_batch_id) {
+    //             $product_batch_data = ProductBatch::select('batch_no', 'expired_date')->find($product_warehouse_data->product_batch_id);
+    //             $batch_no = $product_batch_data->batch_no;
+    //             $expiredDate = date(config('date_format'), strtotime($product_batch_data->expired_date));
+    //         }
+    //         else {
+    //             $batch_no = 'N/A';
+    //             $expiredDate = 'N/A';
+    //         }
+    //         $warehouse[] = $lims_warehouse_data->name;
+    //         $batch[] = $batch_no;
+    //         $expired_date[] = $expiredDate;
+    //         $qty[] = $product_warehouse_data->qty;
+    //     }
+
+    //     $product_warehouse = [$warehouse, $qty, $batch, $expired_date];
+    //     $product_variant_warehouse = [$warehouse_name, $variant_name, $variant_qty];
+    //     return ['product_warehouse' => $product_warehouse, 'product_variant_warehouse' => $product_variant_warehouse];
+    // }
 
     public function printBarcode()
     {

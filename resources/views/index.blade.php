@@ -116,7 +116,7 @@
             <div class="col-md-12 form-group">
               <div class="row">
                 <!-- Count item widget-->
-                <div class="col-sm-2">
+                <div class="col-sm-4">
                   <div class="wrapper count-title text-center">
                     <div class="icon"><i class="dripicons-graph-bar" style="color: #733686"></i></div>
                     <div class="name"><strong style="color: #733686">{{ trans('file.Total Orders') }}</strong></div>
@@ -124,23 +124,25 @@
                   </div>
                 </div>
                 <!-- Count item widget-->
-                <div class="col-sm-2">
+                <div class="col-sm-4">
                   <div class="wrapper count-title text-center">
                     <div class="icon"><i class="dripicons-return" style="color: #ff8952"></i></div>
-                    <div class="name"><strong style="color: #ff8952">{{trans('file.Delivered / Invoiced')}}</strong></div>
+                    <div class="name"><strong style="color: #ff8952">{{trans('file.Delivered')}}</strong></div>
                     <div class="count-number delivered-data">{{$livre_facture}}</div>
                   </div>
                 </div>
                 <!-- Count item widget-->
-                <div class="col-sm-2">
+                <div class="col-sm-4">
                   <div class="wrapper count-title text-center">
                     <div class="icon"><i class="dripicons-media-loop" style="color: #00c689"></i></div>
                     <div class="name"><strong style="color: #00c689">{{trans('file.In progress')}}</strong></div>
                     <div class="count-number in-progress-data">{{$en_cours}}</div>
                   </div>
                 </div>
+              </div>
+              <div class="row">
                 <!-- Count item widget-->
-                <div class="col-sm-2">
+                <div class="col-sm-4">
                   <div class="wrapper count-title text-center">
                     <div class="icon"><i class="dripicons-trophy" style="color: #297ff9"></i></div>
                     <div class="name"><strong style="color: #297ff9">{{trans('file.Profit')}}</strong></div>
@@ -148,7 +150,7 @@
                   </div>
                 </div>
                 <!-- Count item widget-->
-                <div class="col-sm-2">
+                <div class="col-sm-4">
                   <div class="wrapper count-title text-center">
                     <div class="icon"><i class="dripicons-trophy" style="color: #297ff9"></i></div>
                     <div class="name"><strong style="color: #297ff9">{{trans('file.Payé')}}</strong></div>
@@ -159,7 +161,7 @@
                   </div>
                 </div>
                 <!-- Count item widget-->
-                <div class="col-sm-2">
+                <div class="col-sm-4">
                   <div class="wrapper count-title text-center">
                     <div class="icon"><i class="dripicons-trophy" style="color: #297ff9"></i></div>
                     <div class="name"><strong style="color: #297ff9">{{trans('file.Reste')}}</strong></div>
@@ -209,7 +211,7 @@
           </div>
         </div>
         
-        <div class="container-fluid">
+        <div class="container-fluid d-none">
           <div class="row">
             {{-- <div class="col-md-12">
               <div class="card">

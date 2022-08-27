@@ -131,22 +131,26 @@ class SaleController extends Controller
                                         ['user_id', Auth::id()],
                                         ['is_valide', $status_id]
                                     ])
+                        ->whereNull('delivery_status')
                         ->whereDate('created_at', '>=' ,$request->input('starting_date'))
                         ->whereDate('created_at', '<=' ,$request->input('ending_date'))
                         ->count();
         elseif(Auth::user()->role_id > 2 && config('staff_access') == 'own')
             $totalData = Sale::where('user_id', Auth::id())
+                        ->whereNull('delivery_status')
                         ->whereDate('created_at', '>=' ,$request->input('starting_date'))
                         ->whereDate('created_at', '<=' ,$request->input('ending_date'))
                         ->count();
         elseif($status_id != 2)
             $totalData = Sale::where('is_valide', $status_id)
+                        ->whereNull('delivery_status')
                         ->whereDate('created_at', '>=' ,$request->input('starting_date'))
                         ->whereDate('created_at', '<=' ,$request->input('ending_date'))
                         ->count();
         else
             $totalData = Sale::whereDate('created_at', '>=' ,$request->input('starting_date'))
                         ->whereDate('created_at', '<=' ,$request->input('ending_date'))
+                        ->whereNull('delivery_status')
                         ->count();
 
         $totalFiltered = $totalData;
@@ -164,6 +168,7 @@ class SaleController extends Controller
                             ['user_id', Auth::id()],
                             ['is_valide', $status_id]
                         ])
+                        ->whereNull('delivery_status')
                         ->whereDate('created_at', '>=' ,$request->input('starting_date'))
                         ->whereDate('created_at', '<=' ,$request->input('ending_date'))
                         ->offset($start)
@@ -172,6 +177,7 @@ class SaleController extends Controller
                         ->get();
             elseif(Auth::user()->role_id > 2 && config('staff_access') == 'own')
                 $sales = Sale::where('user_id', Auth::id())
+                        ->whereNull('delivery_status')
                         ->whereDate('created_at', '>=' ,$request->input('starting_date'))
                         ->whereDate('created_at', '<=' ,$request->input('ending_date'))
                         ->offset($start)
@@ -180,6 +186,7 @@ class SaleController extends Controller
                         ->get();
             elseif($status_id != 2)
                 $sales = Sale::where('is_valide', $status_id)
+                        ->whereNull('delivery_status')
                         ->whereDate('created_at', '>=' ,$request->input('starting_date'))
                         ->whereDate('created_at', '<=' ,$request->input('ending_date'))
                         ->offset($start)
@@ -188,6 +195,7 @@ class SaleController extends Controller
                         ->get();
             else
                 $sales = Sale::whereDate('created_at', '>=' ,$request->input('starting_date'))
+                        ->whereNull('delivery_status')
                         ->whereDate('created_at', '<=' ,$request->input('ending_date'))
                         ->offset($start)
                         ->limit($limit)
@@ -207,6 +215,7 @@ class SaleController extends Controller
                             ['is_valide', $status_id],
                             ['reference_no', 'LIKE', "%{$search}%"]
                         ])
+                        ->whereNull('delivery_status')
                         ->orwhere([
                             ['user_id', Auth::id()],
                             ['is_valide', $status_id],
@@ -229,6 +238,7 @@ class SaleController extends Controller
                             ['is_valide', $status_id],
                             ['reference_no', 'LIKE', "%{$search}%"]
                         ])
+                        ->whereNull('delivery_status')
                         ->orwhere([
                             ['user_id', Auth::id()],
                             ['is_valide', $status_id],
@@ -250,6 +260,7 @@ class SaleController extends Controller
                             ['user_id', Auth::id()],
                             ['reference_no', 'LIKE', "%{$search}%"]
                         ])
+                        ->whereNull('delivery_status')
                         ->orwhere([
                             ['user_id', Auth::id()],
                             ['customer_name', 'LIKE', "%{$search}%"]
@@ -269,6 +280,7 @@ class SaleController extends Controller
                             ['user_id', Auth::id()],
                             ['reference_no', 'LIKE', "%{$search}%"]
                         ])
+                        ->whereNull('delivery_status')
                         ->orwhere([
                             ['user_id', Auth::id()],
                             ['customer_name', 'LIKE', "%{$search}%"]
@@ -288,6 +300,7 @@ class SaleController extends Controller
                             ['is_valide', $status_id],
                             ['reference_no', 'LIKE', "%{$search}%"]
                         ])
+                        ->whereNull('delivery_status')
                         ->orwhere([
                             ['is_valide', $status_id],
                             ['customer_name', 'LIKE', "%{$search}%"]
@@ -307,6 +320,7 @@ class SaleController extends Controller
                             ['is_valide', $status_id],
                             ['reference_no', 'LIKE', "%{$search}%"]
                         ])
+                        ->whereNull('delivery_status')
                         ->orwhere([
                             ['is_valide', $status_id],
                             ['customer_name', 'LIKE', "%{$search}%"]
@@ -322,6 +336,7 @@ class SaleController extends Controller
                 $condition = "else";
                 $sales = Sale::whereDate('created_at', '>=' ,$request->input('starting_date'))
                         ->whereDate('created_at', '<=' ,$request->input('ending_date'))
+                        ->whereNull('delivery_status')
                         ->where('reference_no', 'LIKE', "%{$search}%")
                         ->orwhere('customer_name', 'LIKE', "%{$search}%")
                         ->orwhere('customer_tel', 'LIKE', "%{$search}%")
@@ -332,6 +347,7 @@ class SaleController extends Controller
 
                 $totalFiltered = Sale::whereDate('created_at', '>=' ,$request->input('starting_date'))
                         ->whereDate('created_at', '<=' ,$request->input('ending_date'))
+                        ->whereNull('delivery_status')
                         ->where('reference_no', 'LIKE', "%{$search}%")
                         ->orwhere('customer_name', 'LIKE', "%{$search}%")
                         ->orwhere('customer_tel', 'LIKE', "%{$search}%")
@@ -1081,7 +1097,7 @@ class SaleController extends Controller
         return redirect('sales')->with('message', 'Payment created successfully');
     }
 
-    public function getProduct($id)
+    public function getProduct()
     {
         $lims_product_warehouse_data = Product::where([
                                                             ['is_active', true],
@@ -1097,10 +1113,10 @@ class SaleController extends Controller
         \DB::reconnect();
 
         $lims_product_with_variant_warehouse_data = Product::join('product_variants', 'products.id', '=', 'product_variants.product_id')
-        ->where([
-            ['products.is_active', true],
-            ['product_variants.qty', '>', 0]
-        ])->whereNotNull('product_variants.variant_id')->select('product_variants.*')->get();
+                                                            ->where([
+                                                                ['products.is_active', true],
+                                                                ['product_variants.qty', '>', 0]
+                                                            ])->whereNotNull('product_variants.variant_id')->select('product_variants.*')->get();
         
         $product_code = [];
         $product_name = [];
@@ -1111,15 +1127,27 @@ class SaleController extends Controller
         //product without variant
         foreach ($lims_product_warehouse_data as $product_warehouse) 
         {
+            // $product_qty[] = $product_warehouse->qty;
+            // $product_price[] = $product_warehouse->price;
+            // $lims_product_data = Product::find($product_warehouse->product_id);
+            // $product_code[] =  $lims_product_data->code;
+            // $product_name[] = htmlspecialchars($lims_product_data->name);
+            // $product_type[] = $lims_product_data->type;
+            // $product_id[] = $lims_product_data->id;
+            // $product_list[] = $lims_product_data->product_list;
+            // $qty_list[] = $lims_product_data->qty_list;
+            // $batch_no[] = null;
+            // $product_batch_id[] = null;
+            
             $product_qty[] = $product_warehouse->qty;
             $product_price[] = $product_warehouse->price;
             $lims_product_data = Product::find($product_warehouse->product_id);
-            $product_code[] =  $lims_product_data->code;
-            $product_name[] = htmlspecialchars($lims_product_data->name);
-            $product_type[] = $lims_product_data->type;
-            $product_id[] = $lims_product_data->id;
-            $product_list[] = $lims_product_data->product_list;
-            $qty_list[] = $lims_product_data->qty_list;
+            $product_code[] =  $product_warehouse->code;
+            $product_name[] = htmlspecialchars($product_warehouse->name);
+            $product_type[] = $product_warehouse->type;
+            $product_id[] = $product_warehouse->id;
+            $product_list[] = $product_warehouse->product_list;
+            $qty_list[] = $product_warehouse->qty_list;
             $batch_no[] = null;
             $product_batch_id[] = null;
         }
@@ -1139,6 +1167,21 @@ class SaleController extends Controller
             $batch_no[] = null;
             $product_batch_id[] = null;
         }
+        
+        // foreach ($lims_product_with_variant_warehouse_data as $product_warehouse) 
+        // {
+        //     $product_qty[] = $product_warehouse->qty;
+        //     $lims_product_data = Product::find($product_warehouse->product_id);
+        //     $lims_product_variant_data = ProductVariant::select('item_code')->FindExactProduct($product_warehouse->product_id, $product_warehouse->variant_id)->first();
+        //     $product_code[] =  $lims_product_variant_data->item_code;
+        //     $product_name[] = htmlspecialchars($lims_product_data->name);
+        //     $product_type[] = $lims_product_data->type;
+        //     $product_id[] = $lims_product_data->id;
+        //     $product_list[] = $lims_product_data->product_list;
+        //     $qty_list[] = $lims_product_data->qty_list;
+        //     $batch_no[] = null;
+        //     $product_batch_id[] = null;
+        // }
         
         //retrieve product with type of digital and combo
         $lims_product_data = Product::whereNotIn('type', ['standard'])->where('is_active', true)->get();
@@ -2044,7 +2087,7 @@ class SaleController extends Controller
                         $lims_product_variant_data->qty -= $new_product_qty;
                         $lims_product_variant_data->save();
                     }
-                    elseif($product_batch_id[$key]) {
+                    /*elseif($product_batch_id[$key]) {
                         $lims_product_warehouse_data = Product_Warehouse::where([
                             ['product_id', $pro_id],
                             ['product_batch_id', $product_batch_id[$key] ],
@@ -2054,7 +2097,7 @@ class SaleController extends Controller
                         $product_batch_data = ProductBatch::find($product_batch_id[$key]);
                         $product_batch_data->qty -= $new_product_qty;
                         $product_batch_data->save();
-                    }
+                    }*/
                     //else {
                         //$lims_product_warehouse_data = Product_Warehouse::FindProductWithoutVariant($pro_id, $data['warehouse_id'])->first();
                     //}

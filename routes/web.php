@@ -103,8 +103,8 @@ Route::group(['middleware' => ['auth', 'active']], function() {
 	Route::get('sales/lims_sale_search', 'SaleController@limsSaleSearch')->name('sale.search');
 	Route::get('sales/lims_product_search', 'SaleController@limsProductSearch')->name('product_sale.search');
 	Route::get('sales/getcustomergroup/{id}', 'SaleController@getCustomerGroup')->name('sale.getcustomergroup');
-	//Route::get('sales/getproduct', 'SaleController@getProduct')->name('sale.getproduct');
-	Route::get('sales/getproduct/{id}', 'SaleController@getProduct')->name('sale.getproduct');
+	Route::get('sales/getproduct', 'SaleController@getProduct')->name('sale.getproduct');
+	//Route::get('sales/getproduct/{id}', 'SaleController@getProduct')->name('sale.getproduct');
 	Route::get('sales/getproduct/{category_id}/{brand_id}', 'SaleController@getProductByFilter');
 	Route::get('sales/getfeatured', 'SaleController@getFeatured');
 	Route::get('sales/get_gift_card', 'SaleController@getGiftCard');

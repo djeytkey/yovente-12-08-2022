@@ -245,8 +245,8 @@
                         </div>
                     </div> --}}
                     <div class="col-md-6 form-group">
-                        <label><strong>{{trans('file.Delivered By')}} *</strong></label>
-                        <input type="text" name="delivered_by" class="form-control" required>
+                        <label><strong>{{trans('file.Delivered By')}}</strong></label>
+                        <input type="text" name="delivered_by" class="form-control" >
                     </div>                                            
                 </div>
                 <div class="row">

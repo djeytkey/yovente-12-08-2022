@@ -484,9 +484,9 @@ $('[data-toggle="tooltip"]').tooltip();
 });*/
 
 $('select[name="customer_city"]').on('change', function() {
-    var id = $(this).val();
+    //var id = $(this).val();
     $.ajax({
-        url: 'getproduct/' + id,
+        url: 'getproduct/',// + id,
         type: "GET",
         success:function(data) {
             lims_product_array = [];
@@ -504,9 +504,9 @@ $('select[name="customer_city"]').on('change', function() {
                 lims_product_array.push(product_code[index] + ' (' + product_name[index] + ')');
             });
         },
-        error:function(){
+        error:function(data){
             alert("No products available for sale !");
-            document.location.reload(true);
+            // document.location.reload(true);
         }
     });
 
@@ -710,7 +710,7 @@ function productSearch(data) {
                 cols += '<td>' + data[0] + '<button type="button" class="edit-product btn btn-link" data-toggle="modal" data-target="#editModal"> <i class="dripicons-document-edit"></i></button></td>';
                 cols += '<td>' + data[1] + '</td>';
                 cols += '<td><input type="number" class="form-control qty" name="qty[]" value="1" step="any" required/></td>';
-                cols += '<td class="original_price">' + data[2].toFixed(2) + '</td>';
+                cols += '<td class="original_price tarikkkk">' + Number(data[2]).toFixed(2) + '</td>';
                 // if(data[12]) {
                 //     cols += '<td><input type="text" class="form-control batch-no" value="'+batch_no[pos]+'" required/> <input type="hidden" class="product-batch-id" name="product_batch_id[]" value="'+product_batch_id[pos]+'"/> </td>';
                 // }
@@ -718,7 +718,7 @@ function productSearch(data) {
                 //     cols += '<td><input type="text" class="form-control batch-no" disabled/> <input type="hidden" class="product-batch-id" name="product_batch_id[]"/> </td>';
                 // }
                 
-                cols += '<td class="net_unit_price"></td>';
+                cols += '<td class="net_unit_price here"></td>';
                 cols += '<td class="discount">0.00</td>';
                 cols += '<td class="tax"></td>';
                 cols += '<td class="sub-total"></td>';
@@ -870,8 +870,8 @@ function calculateRowProductData(quantity) {
         var tax = (sub_total_unit - net_unit_price) * quantity;
         var sub_total = sub_total_unit * quantity;
 
-        $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.net_unit_price').text(net_unit_price.toFixed(2));
-        $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.net_unit_price').val(net_unit_price.toFixed(2));
+        $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.net_unit_price').text(Number(net_unit_price.toFixed(2)));
+        $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.net_unit_price').val(Number(net_unit_price.toFixed(2)));
         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.tax').text(tax.toFixed(2));
         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.tax-value').val(tax.toFixed(2));
         $('table.order-list tbody tr:nth-child(' + (rowindex + 1) + ')').find('.sub-total').text(sub_total.toFixed(2));
